@@ -1,3 +1,7 @@
+console.log('PRODUTOS_CONFIG disponível:', typeof PRODUTOS_CONFIG !== 'undefined');
+console.log('URL params:', new URLSearchParams(window.location.search).get('id'));
+
+
 // Função para pegar parâmetro da URL
 function getUrlParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
