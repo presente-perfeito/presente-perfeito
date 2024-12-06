@@ -68,4 +68,74 @@ const PRODUTOS_CONFIG = {
             }
         ]
     }
+,
+    'pai-premium': {
+        titulo: "Presentes TOP pra Impressionar seu Pai!",
+        subtitulo: "Selecionamos presentes PREMIUM que vão deixar seu pai sem palavras!",
+        categoria: "Pai",
+        faixa: "R$200 a R$500",
+        foco: "Luxo e Exclusividade",
+        produtoPrincipal: {
+            nome: "Smart Watch Premium Sport",
+            imagem: "https://http2.mlstatic.com/D_NQ_NP_821283-MLB71786135624_092023-O.webp",
+            reviews: {
+                media: 4.8,
+                total: 3421,
+                vendidos: 892,
+                destaque: {
+                    autor: "Roberto Silva",
+                    texto: "Presenteei meu pai e ele usa todo dia! A qualidade é impressionante."
+                }
+            },
+            beneficios: [
+                "Monitoramento completo de saúde e esporte",
+                "Design premium em aço inoxidável",
+                "Bateria que dura até 14 dias",
+                "GPS integrado para caminhadas e corridas"
+            ],
+            precos: {
+                shopee: {
+                    normal: 598.90,
+                    promo: 379.90,
+                    extra: "Cupom: -R$50"
+                },
+                amazon: {
+                    normal: 649.90,
+                    promo: 399.90,
+                    extra: "Frete Grátis Prime"
+                },
+                magalu: {
+                    normal: 627.90,
+                    promo: 419.90,
+                    extra: "12x sem juros"
+                }
+            }
+        },
+        sugestoes: [
+            {
+                nome: "Fone Bluetooth Premium",
+                imagem: "https://http2.mlstatic.com/D_NQ_NP_833008-MLU70421597329_072023-O.webp",
+                reviews: {
+                    media: 4.7,
+                    total: 567
+                },
+                precos: {
+                    normal: 459.90,
+                    promo: 289.90
+                }
+            },
+            {
+                nome: "Maleta Executiva Couro",
+                imagem: "https://http2.mlstatic.com/D_NQ_NP_766593-MLB53264098249_012023-O.webp",
+                reviews: {
+                    media: 4.9,
+                    total: 324
+                },
+                precos: {
+                    normal: 489.90,
+                    promo: 299.90
+                }
+            }
+        ]
+    }
 };
