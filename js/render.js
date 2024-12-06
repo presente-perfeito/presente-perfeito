@@ -1,60 +1,27 @@
+// Debug logs
 console.log('PRODUTOS_CONFIG disponível:', typeof PRODUTOS_CONFIG !== 'undefined');
 console.log('URL params:', new URLSearchParams(window.location.search).get('id'));
 
-
-// Função para pegar parâmetro da URL
 function getUrlParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
 
-// Função para formatar preço
 function formatPreco(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// Função para pegar estrelas baseado na nota
 function getEstrelas(nota) {
     return '★'.repeat(Math.floor(nota)) + '☆'.repeat(5 - Math.floor(nota));
 }
 
-// Função para renderizar preços das lojas
-function renderizarPrecos(produto) {
-    const lojas = ['shopee', 'amazon', 'magalu'];
-    const lojasHTML = lojas.map(loja => {
-        const precoConfig = produto.precos[loja];
-        return `
-            <div class="border rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center">
-                        <img src="images/${loja}.jpg" class="w-8 h-8 mr-3">
-                        <div>
-                            <p class="font-bold">${loja.charAt(0).toUpperCase() + loja.slice(1)}</p>
-                            <div class="flex items-center">
-                                <span class="text-yellow-400">★★★★★</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-gray-400 text-sm line-through">${formatPreco(precoConfig.normal)}</p>
-                        <p class="text-2xl font-bold">${formatPreco(precoConfig.promo)}</p>
-                        <p class="text-green-500 text-sm">${precoConfig.extra}</p>
-                    </div>
-                </div>
-                <a href="#" class="block bg-blue-600 text-center text-white py-2 rounded-lg mt-3 font-bold hover:bg-blue-700">
-                    Ver na ${loja.charAt(0).toUpperCase() + loja.slice(1)}
-                </a>
-            </div>
-        `;
-    }).join('');
-
-    return lojasHTML;
-}
-
-// Função principal de renderização
 function renderizarPagina() {
     const produtoId = getUrlParam('id');
+    
+    console.log('Tentando renderizar:', produtoId, PRODUTOS_CONFIG[produtoId]);
+
     if (!produtoId || !PRODUTOS_CONFIG[produtoId]) {
+        console.log('Redirecionando para index...');
         window.location.href = 'index.html';
         return;
     }
@@ -62,26 +29,23 @@ function renderizarPagina() {
     const config = PRODUTOS_CONFIG[produtoId];
     const produto = config.produtoPrincipal;
 
-    // Atualiza título e subtítulo
-    document.querySelector('h1').textContent = config.titulo;
+    // Título e subtítulo
+    document.querySelector('h1.text-4xl').textContent = config.titulo;
     document.querySelector('p.text-xl.mb-4').textContent = config.subtitulo;
 
-    // Atualiza informações da categoria
-    const infoElements = document.querySelectorAll('.bg-white\\/20 p.font-bold');
-    infoElements[0].textContent = `👨 Categoria: ${config.categoria}`;
-    infoElements[1].textContent = `💰 Faixa: ${config.faixa}`;
-    infoElements[2].textContent = `⭐ Foco: ${config.foco}`;
+    // Informações da categoria
+    const infoItems = document.querySelectorAll('.bg-white\\/20 p.font-bold');
+    infoItems[0].textContent = `👨 Categoria: ${config.categoria}`;
+    infoItems[1].textContent = `💰 Faixa: ${config.faixa}`;
+    infoItems[2].textContent = `⭐ Foco: ${config.foco}`;
 
-    // Atualiza produto principal
-    const produtoImg = document.querySelector('.w-1/3 img');
-    produtoImg.src = produto.imagem;
-    produtoImg.alt = produto.nome;
-    
-    document.querySelector('h2').textContent = produto.nome;
+    // Produto principal
+    document.querySelector('.w-1\\/3.max-w-sm img').src = produto.imagem;
+    document.querySelector('h2.text-3xl').textContent = produto.nome;
 
     // Reviews
-    const reviewsElement = document.querySelector('.space-y-2');
-    reviewsElement.innerHTML = `
+    const reviewsContainer = document.querySelector('.space-y-2');
+    reviewsContainer.innerHTML = `
         <div class="flex items-center">
             <span class="text-yellow-400 text-xl">${getEstrelas(produto.reviews.media)}</span>
             <span class="text-gray-600 text-lg ml-2">(${produto.reviews.media} / 5)</span>
@@ -93,19 +57,37 @@ function renderizarPagina() {
         </div>
     `;
 
-    // Review destaque
-    const reviewDestaque = document.querySelector('.bg-gray-50.p-4.rounded-lg.mb-4 .text-gray-600');
-    reviewDestaque.textContent = produto.reviews.destaque.texto;
-    document.querySelector('.review-iniciais').textContent = produto.reviews.destaque.autor.split(' ').map(n => n[0]).join('');
-    document.querySelector('.review-autor').textContent = produto.reviews.destaque.autor;
-
-    // Preços das lojas
-    const lojasContainer = document.querySelector('.space-y-3.mb-6');
-    lojasContainer.innerHTML = renderizarPrecos(produto);
-
     // Benefícios
-    const beneficiosElement = document.querySelector('.bg-gray-50.p-4.rounded-lg.mt-4 ul');
-    beneficiosElement.innerHTML = produto.beneficios.map(b => `<li>${b}</li>`).join('');
+    const beneficiosLista = document.querySelector('.bg-gray-50.p-4.rounded-lg.mt-4 ul');
+    beneficiosLista.innerHTML = produto.beneficios.map(b => `<li>${b}</li>`).join('');
+
+    // Preços
+    const precosContainer = document.querySelector('.space-y-3.mb-6');
+    Object.entries(produto.precos).forEach(([loja, precos]) => {
+        const div = document.createElement('div');
+        div.className = 'border rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer';
+        div.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div>
+                        <p class="font-bold">${loja.charAt(0).toUpperCase() + loja.slice(1)}</p>
+                        <div class="flex items-center">
+                            <span class="text-yellow-400">★★★★★</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-gray-400 text-sm line-through">${formatPreco(precos.normal)}</p>
+                    <p class="text-2xl font-bold">${formatPreco(precos.promo)}</p>
+                    <p class="text-green-500 text-sm">${precos.extra}</p>
+                </div>
+            </div>
+            <a href="#" class="block bg-blue-600 text-center text-white py-2 rounded-lg mt-3 font-bold hover:bg-blue-700">
+                Ver na ${loja.charAt(0).toUpperCase() + loja.slice(1)}
+            </a>
+        `;
+        precosContainer.appendChild(div);
+    });
 
     // Sugestões
     const sugestoesContainer = document.querySelector('.grid.grid-cols-2.gap-4.mb-20');
@@ -125,4 +107,5 @@ function renderizarPagina() {
     `).join('');
 }
 
+// Inicializa quando a página carregar
 document.addEventListener('DOMContentLoaded', renderizarPagina);
