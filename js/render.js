@@ -14,6 +14,39 @@ function getEstrelas(nota) {
     return '★'.repeat(Math.floor(nota)) + '☆'.repeat(5 - Math.floor(nota));
 }
 
+// Função para renderizar preços das lojas
+function renderizarPrecos(produto) {
+    const lojas = ['shopee', 'amazon', 'magalu'];
+    const lojasHTML = lojas.map(loja => {
+        const precoConfig = produto.precos[loja];
+        return `
+            <div class="border rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <img src="images/${loja}.jpg" class="w-8 h-8 mr-3">
+                        <div>
+                            <p class="font-bold">${loja.charAt(0).toUpperCase() + loja.slice(1)}</p>
+                            <div class="flex items-center">
+                                <span class="text-yellow-400">★★★★★</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-400 text-sm line-through">${formatPreco(precoConfig.normal)}</p>
+                        <p class="text-2xl font-bold">${formatPreco(precoConfig.promo)}</p>
+                        <p class="text-green-500 text-sm">${precoConfig.extra}</p>
+                    </div>
+                </div>
+                <a href="#" class="block bg-blue-600 text-center text-white py-2 rounded-lg mt-3 font-bold hover:bg-blue-700">
+                    Ver na ${loja.charAt(0).toUpperCase() + loja.slice(1)}
+                </a>
+            </div>
+        `;
+    }).join('');
+
+    return lojasHTML;
+}
+
 // Função principal de renderização
 function renderizarPagina() {
     const produtoId = getUrlParam('id');
@@ -30,12 +63,16 @@ function renderizarPagina() {
     document.querySelector('p.text-xl.mb-4').textContent = config.subtitulo;
 
     // Atualiza informações da categoria
-    document.querySelector('.bg-white\\/20 p:nth-child(2)').textContent = `👨 Categoria: ${config.categoria}`;
-    document.querySelector('.bg-white\\/20 p:nth-child(3)').textContent = `💰 Faixa: ${config.faixa}`;
-    document.querySelector('.bg-white\\/20 p:nth-child(4)').textContent = `⭐ Foco: ${config.foco}`;
+    const infoElements = document.querySelectorAll('.bg-white\\/20 p.font-bold');
+    infoElements[0].textContent = `👨 Categoria: ${config.categoria}`;
+    infoElements[1].textContent = `💰 Faixa: ${config.faixa}`;
+    infoElements[2].textContent = `⭐ Foco: ${config.foco}`;
 
     // Atualiza produto principal
-    document.querySelector('.w-1/3 img').src = produto.imagem;
+    const produtoImg = document.querySelector('.w-1/3 img');
+    produtoImg.src = produto.imagem;
+    produtoImg.alt = produto.nome;
+    
     document.querySelector('h2').textContent = produto.nome;
 
     // Reviews
@@ -52,23 +89,22 @@ function renderizarPagina() {
         </div>
     `;
 
-    // Atualiza preços
-    const lojas = ['shopee', 'amazon', 'magalu'];
-    lojas.forEach(loja => {
-        const precoConfig = produto.precos[loja];
-        const lojaElement = document.querySelector(`a[href*="SEU_LINK_${loja.toUpperCase()}"]`).parentElement;
-        
-        lojaElement.querySelector('.text-gray-400.text-sm.line-through').textContent = formatPreco(precoConfig.normal);
-        lojaElement.querySelector('.text-2xl.font-bold').textContent = formatPreco(precoConfig.promo);
-        lojaElement.querySelector('.text-green-500.text-sm, .text-orange-500.text-sm').textContent = precoConfig.extra;
-    });
+    // Review destaque
+    const reviewDestaque = document.querySelector('.bg-gray-50.p-4.rounded-lg.mb-4 .text-gray-600');
+    reviewDestaque.textContent = produto.reviews.destaque.texto;
+    document.querySelector('.review-iniciais').textContent = produto.reviews.destaque.autor.split(' ').map(n => n[0]).join('');
+    document.querySelector('.review-autor').textContent = produto.reviews.destaque.autor;
 
-    // Atualiza benefícios
+    // Preços das lojas
+    const lojasContainer = document.querySelector('.space-y-3.mb-6');
+    lojasContainer.innerHTML = renderizarPrecos(produto);
+
+    // Benefícios
     const beneficiosElement = document.querySelector('.bg-gray-50.p-4.rounded-lg.mt-4 ul');
     beneficiosElement.innerHTML = produto.beneficios.map(b => `<li>${b}</li>`).join('');
 
-    // Atualiza sugestões
-    const sugestoesContainer = document.querySelector('.grid.grid-cols-2.gap-4');
+    // Sugestões
+    const sugestoesContainer = document.querySelector('.grid.grid-cols-2.gap-4.mb-20');
     sugestoesContainer.innerHTML = config.sugestoes.map(sugestao => `
         <div class="bg-white rounded-lg p-4 text-black">
             <img src="${sugestao.imagem}" alt="${sugestao.nome}" class="w-full rounded-lg mb-3">
@@ -85,5 +121,4 @@ function renderizarPagina() {
     `).join('');
 }
 
-// Inicia renderização quando a página carregar
 document.addEventListener('DOMContentLoaded', renderizarPagina);
