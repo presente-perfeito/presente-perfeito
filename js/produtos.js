@@ -67,8 +67,7 @@ const PRODUTOS_CONFIG = {
                 }
             }
         ]
-    }
-,
+    },
     'pai-premium': {
         titulo: "Presentes TOP pra Impressionar seu Pai!",
         subtitulo: "Selecionamos presentes PREMIUM que vão deixar seu pai sem palavras!",
