@@ -1,4 +1,4 @@
-/ produtos.js
+// produtos.js
 const PRODUTOS_CONFIG = {
     "pai-basico": {
         meta: {
