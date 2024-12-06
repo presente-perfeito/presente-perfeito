@@ -1,5 +1,5 @@
 const PRODUTOS_CONFIG = {
-    'pai-basico': {
+    'pai-basic': {
         titulo: "Presentes que Fazem Seu Pai se Sentir o Cara!",
         subtitulo: "Seu pai merece algo especial. Selecionamos presentes que vão fazer ele se sentir o REI que ele é!",
         categoria: "Pai",
