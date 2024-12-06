@@ -1,137 +1,89 @@
-// render.js
-
-// TRUQUE NINJA 1: Cache dos produtos
-function salvarCache(id, dados) {
-    localStorage.setItem(`produto_${id}`, JSON.stringify(dados));
+// Função para pegar parâmetro da URL
+function getUrlParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
 }
 
-function getCache(id) {
-    return JSON.parse(localStorage.getItem(`produto_${id}`));
+// Função para formatar preço
+function formatPreco(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// TRUQUE NINJA 2: Preload de imagens
-function preloadImagens(produto) {
-    const imagens = [
-        produto.produtoPrincipal.imagem,
-        ...produto.sugestoes.map(s => s.imagem),
-        ...Object.values(produto.produtoPrincipal.lojas).map(l => l.logo)
-    ];
-    
-    imagens.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
+// Função para pegar estrelas baseado na nota
+function getEstrelas(nota) {
+    return '★'.repeat(Math.floor(nota)) + '☆'.repeat(5 - Math.floor(nota));
 }
 
-// TRUQUE NINJA 3: Sistema de fallback
-function getProdutoSeguro(id) {
-    // Tenta pegar do cache primeiro
-    const cache = getCache(id);
-    if (cache) return cache;
-
-    // Se não tem no cache, pega do config
-    const produto = PRODUTOS_CONFIG[id];
-    if (produto) {
-        salvarCache(id, produto);
-        return produto;
+// Função principal de renderização
+function renderizarPagina() {
+    const produtoId = getUrlParam('id');
+    if (!produtoId || !PRODUTOS_CONFIG[produtoId]) {
+        window.location.href = 'index.html';
+        return;
     }
 
-    // Se deu tudo errado, redireciona pra home
-    window.location.href = '/presente-perfeito/';
+    const config = PRODUTOS_CONFIG[produtoId];
+    const produto = config.produtoPrincipal;
+
+    // Atualiza título e subtítulo
+    document.querySelector('h1').textContent = config.titulo;
+    document.querySelector('p.text-xl.mb-4').textContent = config.subtitulo;
+
+    // Atualiza informações da categoria
+    document.querySelector('.bg-white\\/20 p:nth-child(2)').textContent = `👨 Categoria: ${config.categoria}`;
+    document.querySelector('.bg-white\\/20 p:nth-child(3)').textContent = `💰 Faixa: ${config.faixa}`;
+    document.querySelector('.bg-white\\/20 p:nth-child(4)').textContent = `⭐ Foco: ${config.foco}`;
+
+    // Atualiza produto principal
+    document.querySelector('.w-1/3 img').src = produto.imagem;
+    document.querySelector('h2').textContent = produto.nome;
+
+    // Reviews
+    const reviewsElement = document.querySelector('.space-y-2');
+    reviewsElement.innerHTML = `
+        <div class="flex items-center">
+            <span class="text-yellow-400 text-xl">${getEstrelas(produto.reviews.media)}</span>
+            <span class="text-gray-600 text-lg ml-2">(${produto.reviews.media} / 5)</span>
+        </div>
+        <div class="flex items-center text-sm space-x-4">
+            <span class="text-green-600">${produto.reviews.total} avaliações</span>
+            <span class="text-gray-300">|</span>
+            <span class="text-blue-600">${produto.reviews.vendidos} vendidos este mês</span>
+        </div>
+    `;
+
+    // Atualiza preços
+    const lojas = ['shopee', 'amazon', 'magalu'];
+    lojas.forEach(loja => {
+        const precoConfig = produto.precos[loja];
+        const lojaElement = document.querySelector(`a[href*="SEU_LINK_${loja.toUpperCase()}"]`).parentElement;
+        
+        lojaElement.querySelector('.text-gray-400.text-sm.line-through').textContent = formatPreco(precoConfig.normal);
+        lojaElement.querySelector('.text-2xl.font-bold').textContent = formatPreco(precoConfig.promo);
+        lojaElement.querySelector('.text-green-500.text-sm, .text-orange-500.text-sm').textContent = precoConfig.extra;
+    });
+
+    // Atualiza benefícios
+    const beneficiosElement = document.querySelector('.bg-gray-50.p-4.rounded-lg.mt-4 ul');
+    beneficiosElement.innerHTML = produto.beneficios.map(b => `<li>${b}</li>`).join('');
+
+    // Atualiza sugestões
+    const sugestoesContainer = document.querySelector('.grid.grid-cols-2.gap-4');
+    sugestoesContainer.innerHTML = config.sugestoes.map(sugestao => `
+        <div class="bg-white rounded-lg p-4 text-black">
+            <img src="${sugestao.imagem}" alt="${sugestao.nome}" class="w-full rounded-lg mb-3">
+            <h3 class="font-bold">${sugestao.nome}</h3>
+            <div class="flex items-center my-2">
+                <span class="text-yellow-400">${getEstrelas(sugestao.reviews.media)}</span>
+                <span class="text-gray-500 text-sm ml-1">(${sugestao.reviews.total} reviews)</span>
+            </div>
+            <p class="text-gray-500 text-sm">Menor preço:</p>
+            <p class="text-gray-400 text-sm line-through">${formatPreco(sugestao.precos.normal)}</p>
+            <p class="text-xl font-bold">${formatPreco(sugestao.precos.promo)}</p>
+            <button class="w-full bg-gray-200 hover:bg-gray-300 text-black rounded p-2 mt-2 transition-colors">Ver Detalhes</button>
+        </div>
+    `).join('');
 }
 
-// Função principal que renderiza tudo
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Pega ID da URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const produtoId = urlParams.get('id') || 'pai-basico'; // fallback pro pai-basico
-
-    // 2. Pega dados do produto
-    const produto = getProdutoSeguro(produtoId);
-    
-    // 3. Preload das imagens
-    preloadImagens(produto);
-
-    // 4. Renderiza Metadados
-    document.querySelector('h1').innerText = produto.meta.titulo;
-    document.querySelector('.subtitulo').innerText = produto.meta.subtitulo;
-    document.querySelector('.categoria').innerText = produto.meta.categoria;
-    document.querySelector('.faixa').innerText = produto.meta.faixa;
-    document.querySelector('.foco').innerText = produto.meta.foco;
-    document.querySelector('.aprovacao').innerText = produto.meta.stats.aprovacao;
-    document.querySelector('.vendas').innerText = produto.meta.stats.vendas;
-
-    // 5. Renderiza Produto Principal
-    const prod = produto.produtoPrincipal;
-    document.querySelector('.produto-img').src = prod.imagem;
-    document.querySelector('.produto-nome').innerText = prod.nome;
-    document.querySelector('.produto-nota').innerText = prod.avaliacoes.nota;
-    document.querySelector('.produto-total-reviews').innerText = prod.avaliacoes.total;
-    document.querySelector('.produto-vendidos').innerText = prod.vendidos;
-
-    // 6. Renderiza Review
-    const review = prod.reviews[0];
-    document.querySelector('.review-autor').innerText = review.autor;
-    document.querySelector('.review-iniciais').innerText = review.iniciais;
-    document.querySelector('.review-texto').innerText = review.texto;
-
-    // 7. Renderiza Lojas
-    const lojasContainer = document.querySelector('.lojas-container');
-    Object.entries(prod.lojas).forEach(([key, loja]) => {
-        const template = `
-            <div class="border rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center">
-                        <img src="${loja.logo}" class="w-8 h-8 mr-3">
-                        <div>
-                            <p class="font-bold">${loja.nome}</p>
-                            ${loja.reviews ? `
-                                <div class="flex items-center">
-                                    <span class="text-yellow-400">${'★'.repeat(loja.nota)}</span>
-                                    <span class="text-gray-500 text-sm ml-1">(${loja.reviews} reviews)</span>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        ${loja.precoOriginal ? `<p class="text-gray-400 text-sm line-through">R$ ${loja.precoOriginal.toFixed(2)}</p>` : ''}
-                        <p class="text-2xl font-bold">R$ ${loja.precoAtual.toFixed(2)}</p>
-                        ${loja.frete ? `<p class="text-green-500 text-sm">${loja.frete}</p>` : ''}
-                    </div>
-                </div>
-                ${loja.link ? `
-                    <a href="${loja.link}" class="block bg-blue-600 text-center text-white py-2 rounded-lg mt-3 font-bold hover:bg-blue-700">
-                        Ver na ${loja.nome}
-                    </a>
-                ` : ''}
-            </div>
-        `;
-        lojasContainer.innerHTML += template;
-    });
-
-    // 8. Renderiza Benefícios
-    const beneficiosLista = document.querySelector('.beneficios-lista');
-    prod.beneficios.forEach(beneficio => {
-        beneficiosLista.innerHTML += `<li>${beneficio}</li>`;
-    });
-
-    // 9. Renderiza Sugestões
-    const sugestoesContainer = document.querySelector('.sugestoes-container');
-    produto.sugestoes.forEach(sugestao => {
-        const template = `
-            <div class="bg-white rounded-lg p-4 text-black">
-                <img src="${sugestao.imagem}" alt="${sugestao.nome}" class="w-full rounded-lg mb-3">
-                <h3 class="font-bold">${sugestao.nome}</h3>
-                <div class="flex items-center my-2">
-                    <span class="text-yellow-400">${'★'.repeat(sugestao.nota)}</span>
-                    <span class="text-gray-500 text-sm ml-1">(${sugestao.reviews} reviews)</span>
-                </div>
-                <p class="text-gray-500 text-sm">Menor preço:</p>
-                <p class="text-gray-400 text-sm line-through">R$ ${sugestao.precoOriginal.toFixed(2)}</p>
-                <p class="text-xl font-bold">R$ ${sugestao.precoAtual.toFixed(2)}</p>
-                <button class="w-full bg-gray-200 hover:bg-gray-300 text-black rounded p-2 mt-2 transition-colors">Ver Detalhes</button>
-            </div>
-        `;
-        sugestoesContainer.innerHTML += template;
-    });
-});
+// Inicia renderização quando a página carregar
+document.addEventListener('DOMContentLoaded', renderizarPagina);
