@@ -34,6 +34,18 @@
             .headline-wrapper {
                 word-break: break-word;
             }
+
+            .w-24.md\:w-20.h-8 {
+                height: auto !important;
+                min-height: 32px;
+                padding: 4px 0;
+            }
+            
+            .w-24.md\:w-20.h-8 img {
+                max-height: 32px !important;
+                width: auto !important;
+                object-fit: contain;
+            }
         }
         #loading-overlay {
             backdrop-filter: blur(5px);
@@ -161,11 +173,13 @@
     <div class="bg-black/50 py-3">
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 px-4 max-w-4xl mx-auto">
             <div class="flex items-center gap-2 w-full md:w-auto justify-center">
-                <div class="w-24 md:w-20 h-8 relative">
+                <!-- Modificado o container da imagem -->
+                <div class="w-24 md:w-20 h-8 md:h-8 relative flex items-center justify-center overflow-visible">
                     <img 
                         src="https://casesbr.com/wp-content/uploads/2022/01/snapedit_1689565316077-2.png" 
                         alt="Site Seguro" 
-                        class="absolute inset-0 w-full h-full object-contain"
+                        class="w-full h-full object-contain max-w-full"
+                        style="max-height: 32px;" 
                     />
                 </div>
                 <span class="text-xs text-gray-300 whitespace-nowrap">Site 100% Seguro</span>
