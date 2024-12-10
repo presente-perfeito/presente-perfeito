@@ -200,8 +200,7 @@ const storeParsers = {
 };
 
 async function buscarProdutoGoogleShopping(nomeProduto) {
-    const API_KEY = 'AIzaSyB8cWLg4upDwom6p0SWahxVVnKJ9TO-Dzw';
-    const CX = 'b052ec2502282449b';
+    
     
     console.log(`\n🔍 Buscando "${nomeProduto}" nas lojas...`);
     
