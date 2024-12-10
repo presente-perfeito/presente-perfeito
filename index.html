@@ -34,7 +34,21 @@
             footer ul {
                 text-align: center;
             }
+
+            .logo-container {
+                position: absolute; /* Muda para absolute no mobile */
+                top: 5px;
+                left: 5px;
+            }
+            
+            .logo {
+                width: 120px;
+            }
+            .logo-container {
+                margin: 20px auto; /* Menor espaçamento no mobile */
+            }
         }
+        
         
         .message-item {
             position: relative;
@@ -55,24 +69,41 @@
             height: 160px; /* Altura fixa */
         }
 
+
+        .logo-container {
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            width: 100%;
+            margin: 5px auto; /* Espaçamento vertical */
+        }
+
+        .logo {
+            width: 150px; /* Ou o tamanho que preferir */
+            height: auto;
+            border-radius: 10px;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-b from-red-500 to-red-700 min-h-screen text-white">
+<body class="bg-gradient-to-b from-red-700 to-red-900 min-h-screen text-white">
+   
     <!-- Banner Topo Flutuante -->
     <div class="bg-red-900 py-2 text-center text-white animate-pulse">
-        🎄 ESPECIAL DE NATAL: Apenas 17 acessos COM DESCONTO restantes hoje!
+        🎄 ESPECIAL DE NATAL: Apenas 27 acessos COM DESCONTO restantes hoje!
     </div>
 
     <div class="container mx-auto px-4 py-8 max-w-2xl">
         <!-- Seção Principal -->
         <div class="text-center mb-8">
-            <div class="text-sm font-bold text-yellow-400 mb-2">TECNOLOGIA EXCLUSIVA PARA ENCONTRAR PROMOÇÕES</div>
-            <h1 class="text-5xl font-bold mb-6">🎁 Ache o Presente Perfeito em <u>Promoção!</u></h1>
+            <div class="logo-container">
+                <img src="https://i.ibb.co/y6Z1JGL/Genio-Text-White-PNG-low.png" alt="Gênio dos Presentes Logo" class="logo">
+            </div>
+            <div class="text-sm font-bold text-yellow-400 mb-2 mt-4">TECNOLOGIA EXCLUSIVA PARA ENCONTRAR PROMOÇÕES</div>
+            <h1 class="text-5xl font-bold mb-6">🎁 Encontre o Presente Perfeito na <span class="text-yellow-400">Promoção</span> em segundos!</h1>
             
             <!-- Box de Economia -->
             <div class="bg-white/20 p-6 rounded-lg mb-6">
                 <div class="text-3xl font-bold mb-2">ECONOMIZE <span style="color: #ffd133">ATÉ R$ 300</span> no presente de Natal desse ano!</div>
-                <div class="text-xl">Nossa Inteligência Artificial vasculha <u>+ de 3.000 lojas em tempo real</u>    para encontrar o presente perfeito no menor preço!</div>
+                <div class="text-xl">Nossa Inteligência Artificial vasculha <u>+ de 3.000 lojas em tempo real</u>    para encontrar o presente perfeito para quem você ama no menor preço!</div>
                 <div class="text-sm mt-5">
                     <span class="bg-white/10 px-2 py-1 rounded mx-1">Amazon</span>
                     <span class="bg-white/10 px-2 py-1 rounded mx-1">Shopee</span>
@@ -331,15 +362,18 @@
         <div class="container mx-auto max-w-3xl">
             <div class="grid grid-cols-2 gap-8 mb-10">
                 <div>
-                    <h3 class="font-bold mb-4">Presente Perfeito LTDA®</h3>
+                    <img src="https://i.ibb.co/y6Z1JGL/Genio-Text-White-PNG-low.png" 
+                        alt="Gênio dos Presentes Logo" 
+                        class="w-24 h-auto opacity-75" />
+                    <h3 class="font-bold mb-4 mt-4">Gênio dos Presentes LTDA®</h3>
                     <p class="text-sm text-gray-400">Buscamos as melhores ofertas para você surpreender quem ama.</p>
                 </div>
                 <div>
                     <h3 class="font-bold mb-4">Links Úteis</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white">Política de Privacidade</a></li>
-                        <li><a href="#" class="hover:text-white">Termos de Uso</a></li>
-                        <li><a href="#" class="hover:text-white">Fale Conosco</a></li>
+                        <li><a href="politica-privacidade.html" class="hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="termos-de-uso.html" class="hover:text-white">Termos de Uso</a></li>
+                        <li><a href="mailto:presenteperfeito410@gmail.com" class="hover:text-white">Fale Conosco</a></li>
                     </ul>
                 </div>
             </div>
@@ -351,7 +385,7 @@
 
     <!-- Footer Flutuante -->
     <div class="fixed bottom-0 left-0 right-0 bg-black/90 text-white py-3 text-center">
-        ⚡ Últimas 17 vagas com desconto! Economia total: até R$ 300
+        ⚡ Últimas 27 vagas com desconto! Economia total: até R$ 300
     </div>
 
 

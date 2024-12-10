@@ -1,0 +1,40 @@
+
+Rendering Mechanism Overview:
+1. Data Storage (produtos.js):
+   - Contains predefined product configurations
+   - Each product has a unique ID (e.g., "pai-basic", "pai-premium")
+   - Structured with details like title, subtitle, main product, prices, reviews
+
+2. Rendering Process (render.js):
+   - Triggered when page loads (DOMContentLoaded event)
+   - Extracts product ID from URL parameters
+   - Finds matching product configuration in PRODUTOS_CONFIG
+   - Populates HTML elements with dynamic data
+
+Price Rendering Example:
+```javascript
+// In render.js, this code handles price display
+const precoShopee = prodPrincipal.precos.shopee;
+document.getElementById('preco-promo').textContent = formatarPreco(precoShopee.promo);
+document.getElementById('preco-normal').textContent = formatarPreco(precoShopee.normal);
+document.getElementById('desconto').textContent = 
+    `-${calcularDesconto(precoShopee.normal, precoShopee.promo)}%`;
+```
+
+Key Rendering Principles:
+- Use matching IDs between HTML and JavaScript
+- Access nested data from product configuration
+- Use helper functions like formatarPreco() for formatting
+- Dynamically update text content of specific elements
+
+To Update the Page:
+1. Modify produtos.js with new product data
+2. Ensure HTML has corresponding element IDs
+3. Render.js automatically handles population of those elements
+
+Recommendations for LLMs:
+- Always reference the full context of produtos.js
+- Match HTML element IDs exactly
+- Use nested object access for complex data structures
+- Utilize existing helper functions in render.js
+
