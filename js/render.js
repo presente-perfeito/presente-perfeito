@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const atualizaTitulo = () => {
             const titulo = document.querySelector('h1');
             if (titulo && produto.categoria) {
-                titulo.innerHTML = `ENCONTREI UM DESCONTO DE <span id="headline-economia" class="text-yellow-400 overflow-hidden"></span> NO PRESENTE PERFEITO PARA <span class="text-yellow-400 overflow-hidden">${produto.categoria.toUpperCase()}</span>!`;
+                titulo.innerHTML = `LOCALIZEI UM DESCONTO DE <span id="headline-economia" class="text-yellow-400 overflow-hidden"></span> NO PRESENTE PERFEITO PARA <span class="text-yellow-400 overflow-hidden">${produto.categoria.toUpperCase()}</span>!`;
             }
         };
 
